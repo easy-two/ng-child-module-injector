@@ -1,5 +1,5 @@
 import {
-  AfterViewInit,
+  AfterViewInit, Compiler,
   Component,
   Injector,
   NgModuleFactory,
@@ -8,8 +8,12 @@ import {
   ViewContainerRef
 } from '@angular/core';
 // @ts-ignore
-import { WithCustomInjectorModule } from 'withCustomInjectorModule';
+import * as withCustomInjectorModule from 'withCustomInjectorModule';
 import { WithCustomInjectorComponent } from './with-custom-injector/with-custom-injector/with-custom-injector.component';
+// @ts-ignore
+import { load } from 'ngFactoryLoader';
+
+declare var AOT: any;
 
 @Component({
   selector: 'app-root',
@@ -22,14 +26,12 @@ export class AppComponent implements AfterViewInit {
   @ViewChild('testOutlet', { read: ViewContainerRef, static: true }) testOutlet: ViewContainerRef;
   constructor(
     private loader: NgModuleFactoryLoader,
-    private injector: Injector
+    private injector: Injector,
+    private compiler: Compiler
   ) {}
 
   ngAfterViewInit(): void {
-    // const path = 'src/app/with-custom-injector/with-custom-injector.module#WithCustomInjectorModule';
-
-    debugger;
-    const moduleFactory = WithCustomInjectorModule;
+    const moduleFactory = load('WithCustomInjectorModule', withCustomInjectorModule, this.compiler);
     const moduleRef = moduleFactory.create(this.injector);
     const compFactory = moduleRef.componentFactoryResolver.resolveComponentFactory(WithCustomInjectorComponent);
     this.testOutlet.createComponent(compFactory);

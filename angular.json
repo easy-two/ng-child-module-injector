@@ -19,7 +19,6 @@
             "customWebpackConfig": {
               "path":"./webpack.config.js"
             },
-            "aot": true,
             "outputPath": "dist/ng-custom-injector-modules",
             "index": "src/index.html",
             "main": "src/main.ts",
@@ -65,10 +64,7 @@
         "serve": {
           "builder": "@angular-builders/custom-webpack:dev-server",
           "options": {
-            "browserTarget": "ng-custom-injector-modules:build",
-            "customWebpackConfig": {
-              "path":"./webpack.config.js"
-            }
+            "browserTarget": "ng-custom-injector-modules:build"
           },
           "configurations": {
             "production": {
