@@ -13,6 +13,10 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "lazyModules": [
+              "src/app/with-custom-injector/with-custom-injector.module"
+            ],
+            "aot": true,
             "outputPath": "dist/ng-custom-injector-modules",
             "index": "src/index.html",
             "main": "src/main.ts",
