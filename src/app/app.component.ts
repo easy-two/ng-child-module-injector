@@ -29,9 +29,9 @@ export class AppComponent implements AfterViewInit {
     // const path = 'src/app/with-custom-injector/with-custom-injector.module#WithCustomInjectorModule';
 
     debugger;
-    // const moduleFactory = WithCustomInjectorModule;
-    // const moduleRef = moduleFactory.create(this.injector);
-    // const compFactory = moduleRef.componentFactoryResolver.resolveComponentFactory(WithCustomInjectorComponent);
-    // this.testOutlet.createComponent(compFactory);
+    const moduleFactory = WithCustomInjectorModule;
+    const moduleRef = moduleFactory.create(this.injector);
+    const compFactory = moduleRef.componentFactoryResolver.resolveComponentFactory(WithCustomInjectorComponent);
+    this.testOutlet.createComponent(compFactory);
   }
 }

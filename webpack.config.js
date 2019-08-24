@@ -8,14 +8,14 @@ module.exports = function (initial, argv) {
   console.log(merge(initial, {
     resolve: {
       alias: {
-        withCustomInjectorModule: 'src/app/with-custom-injector/with-custom-injector.module' + aot ? '.ngfactory' : ''
+        withCustomInjectorModule: 'src/app/with-custom-injector/with-custom-injector.module' + (aot ? '.ngfactory' : '')
       }
     }
   }));
   return merge(initial, {
     resolve: {
       alias: {
-        withCustomInjectorModule: 'src/app/with-custom-injector/with-custom-injector.module' + aot ? '.ngfactory' : ''
+        withCustomInjectorModule: 'src/app/with-custom-injector/with-custom-injector.module' + (aot ? '.ngfactory' : '')
       }
     }
   });
