@@ -8,7 +8,7 @@ import {
   ViewContainerRef
 } from '@angular/core';
 // @ts-ignore
-// import { WithCustomInjectorModule } from 'withCustomInjectorModule';
+import { WithCustomInjectorModule } from 'withCustomInjectorModule';
 import { WithCustomInjectorComponent } from './with-custom-injector/with-custom-injector/with-custom-injector.component';
 
 @Component({
