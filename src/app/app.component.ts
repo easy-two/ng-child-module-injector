@@ -17,7 +17,7 @@ import { WithCustomInjectorComponent } from './with-custom-injector/with-custom-
 export class AppComponent implements AfterViewInit {
   title = 'ng-custom-injector-modules';
 
-  @ViewChild('testOutlet', {read: ViewContainerRef}) testOutlet: ViewContainerRef;
+  @ViewChild('testOutlet', { read: ViewContainerRef, static: true }) testOutlet: ViewContainerRef;
   constructor(
     private loader: NgModuleFactoryLoader,
     private injector: Injector
