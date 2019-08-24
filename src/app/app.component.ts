@@ -7,6 +7,8 @@ import {
   ViewChild,
   ViewContainerRef
 } from '@angular/core';
+// @ts-ignore
+// import { WithCustomInjectorModule } from 'withCustomInjectorModule';
 import { WithCustomInjectorComponent } from './with-custom-injector/with-custom-injector/with-custom-injector.component';
 
 @Component({
@@ -24,11 +26,12 @@ export class AppComponent implements AfterViewInit {
   ) {}
 
   ngAfterViewInit(): void {
-    const path = 'src/app/with-custom-injector/with-custom-injector.module#WithCustomInjectorModule';
-    this.loader.load(path).then((moduleFactory: NgModuleFactory<any>) => {
-      const moduleRef = moduleFactory.create(this.injector);
-      const compFactory = moduleRef.componentFactoryResolver.resolveComponentFactory(WithCustomInjectorComponent);
-      this.testOutlet.createComponent(compFactory);
-    });
+    // const path = 'src/app/with-custom-injector/with-custom-injector.module#WithCustomInjectorModule';
+
+    debugger;
+    // const moduleFactory = WithCustomInjectorModule;
+    // const moduleRef = moduleFactory.create(this.injector);
+    // const compFactory = moduleRef.componentFactoryResolver.resolveComponentFactory(WithCustomInjectorComponent);
+    // this.testOutlet.createComponent(compFactory);
   }
 }

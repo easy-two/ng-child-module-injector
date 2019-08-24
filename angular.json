@@ -16,6 +16,9 @@
             "lazyModules": [
               "src/app/with-custom-injector/with-custom-injector.module"
             ],
+            "customWebpackConfig": {
+              "path":"./webpack.config.js"
+            },
             "aot": true,
             "outputPath": "dist/ng-custom-injector-modules",
             "index": "src/index.html",
