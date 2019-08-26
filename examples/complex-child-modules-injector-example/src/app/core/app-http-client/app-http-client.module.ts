@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import {
-  AnotherHttpInterceptorWhichMustBeInRootAndSoooqaLoggedEverywhereInAnyFuckingLazyModuleProvider,
+  AnotherHttpInterceptorProvider,
   AppHttpInterceptorProvider
 } from './http-interceptor';
 
@@ -13,7 +13,7 @@ import {
     HttpClientModule
   ],
   providers: [
-    AnotherHttpInterceptorWhichMustBeInRootAndSoooqaLoggedEverywhereInAnyFuckingLazyModuleProvider,
+    AnotherHttpInterceptorProvider,
     AppHttpInterceptorProvider
   ]
 })

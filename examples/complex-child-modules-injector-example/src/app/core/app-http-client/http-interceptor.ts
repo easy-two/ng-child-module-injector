@@ -8,7 +8,6 @@ export class AppHttpInterceptor implements HttpInterceptor {
 
   }
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    debugger;
     console.log('>> intercept', this.customInjectorToken, req.url);
     return next.handle(req);
   }
@@ -21,15 +20,15 @@ export const AppHttpInterceptorProvider = {
 };
 
 
-export class AnotherHttpInterceptorWhichMustBeInRootAndSoooqaLoggedEverywhereInAnyFuckingLazyModule {
+export class AnotherHttpInterceptor {
   intercept(req, next) {
     // console.log('>> common request inter ceptor', req.url);
     return next.handle(req);
   }
 }
 
-export const AnotherHttpInterceptorWhichMustBeInRootAndSoooqaLoggedEverywhereInAnyFuckingLazyModuleProvider = {
+export const AnotherHttpInterceptorProvider = {
   provide: HTTP_INTERCEPTORS,
   multi: true,
-  useClass: AnotherHttpInterceptorWhichMustBeInRootAndSoooqaLoggedEverywhereInAnyFuckingLazyModule
+  useClass: AnotherHttpInterceptor
 };
