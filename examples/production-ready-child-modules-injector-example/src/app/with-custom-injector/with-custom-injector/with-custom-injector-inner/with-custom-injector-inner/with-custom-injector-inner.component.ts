@@ -14,11 +14,14 @@ export class WithCustomInjectorInnerComponent {
     private injector: Injector,
     private compiler: Compiler,
     private apiService: ApiService,
-    @Optional() @Inject(CUSTOM_INJECTOR_TOKEN) token: string,
+    @Optional() @Inject(CUSTOM_INJECTOR_TOKEN) public token: string,
     private http: HttpClient
   ) {
     // console.log('>> token with custom inner injector value is:', token);
-    apiService.doRequest('/inner-with-custom-injector-request').subscribe(() => {}, () => {});
-    http.get('/poopa').subscribe();
+    apiService.doRequest(this.reqUrl).subscribe(() => {}, () => {});
+    http.get(this.httpClientReqUrl).subscribe();
   }
+
+  reqUrl = '/inner-with-custom-injector-request';
+  httpClientReqUrl = '/poopa';
 }
