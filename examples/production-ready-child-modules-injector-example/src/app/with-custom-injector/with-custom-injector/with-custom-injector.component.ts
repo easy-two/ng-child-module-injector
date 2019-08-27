@@ -1,18 +1,8 @@
 import {
-  AfterViewInit,
   Compiler,
   Component, Inject,
-  Injector, Input,
-  NgModuleFactoryLoader, Optional,
-  ViewChild,
-  ViewContainerRef
+  Injector, Input, Optional,
 } from '@angular/core';
-// @ts-ignore
-import * as anotherCustomInjectorModule from 'anotherCustomInjectorModule';
-import { AnotherComponentWithCustomInjectorComponent } from '../../another-module-with-custom-injector/another-component-with-custom-injector/another-component-with-custom-injector.component';
-// @ts-ignore
-import { load } from 'ngFactoryLoader';
-import { HttpClient } from '@angular/common/http';
 import { CUSTOM_INJECTOR_TOKEN } from '../../tokens';
 import { ApiService } from '../../shared/api/api.service';
 
@@ -26,11 +16,13 @@ export class WithCustomInjectorComponent {
     private injector: Injector,
     private compiler: Compiler,
     private apiService: ApiService,
-    @Optional() @Inject(CUSTOM_INJECTOR_TOKEN) token: string
+    @Optional() @Inject(CUSTOM_INJECTOR_TOKEN) public token: string
   ) {
     // console.log('>> token with custom injector value is:', token);
-    apiService.doRequest('/with-custom-injector-request').subscribe(() => {}, () => {});
+    apiService.doRequest(this.reqUrl).subscribe(() => {}, () => {});
   }
+
+  reqUrl = '/with-custom-injector-request';
 
   @Input() message;
 }

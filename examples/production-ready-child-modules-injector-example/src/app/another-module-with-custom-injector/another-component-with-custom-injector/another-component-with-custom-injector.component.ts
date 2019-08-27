@@ -11,10 +11,12 @@ export class AnotherComponentWithCustomInjectorComponent {
 
   constructor(
     private apiService: ApiService,
-    @Optional() @Inject(CUSTOM_INJECTOR_TOKEN) token: string
+    @Optional() @Inject(CUSTOM_INJECTOR_TOKEN) public token: string
   ) {
     // console.log('>> token another with custom injector value is:', token);
-    apiService.doRequest('/another-with-custom-injector-request').subscribe(() => {}, () => {});
+    apiService.doRequest(this.reqUrl).subscribe(() => {}, () => {});
   }
+
+  reqUrl = '/another-with-custom-injector-request';
 
 }
