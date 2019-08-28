@@ -38,9 +38,8 @@ export function childInjectorModulesFactory(
 ): any {
   return modules.map(([ngModuleWebpackModuleFn, component]) => {
     const ngModuleWebpackModule = ngModuleWebpackModuleFn();
-    const factory: NgModuleFactory<any> = load(ngModuleWebpackModule, compiler);
+    const [name, factory]: [string, NgModuleFactory<any>] = load(ngModuleWebpackModule, compiler);
     const module = factory.create(injector);
-    const { name } = factory.moduleType;
 
     return { name, module, component };
   });
