@@ -1,4 +1,4 @@
-# ng-custom-injector-modules
+# ng-child-module-injector
 
 This is repo with examples how to create child module injectors in angular application.
 
