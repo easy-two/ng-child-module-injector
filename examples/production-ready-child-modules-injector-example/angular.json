@@ -13,11 +13,6 @@
         "build": {
           "builder": "@angular-builders/custom-webpack:browser",
           "options": {
-            "lazyModules": [
-              "src/app/with-custom-injector/with-custom-injector.module",
-              "src/app/another-module-with-custom-injector/another-module-with-custom-injector.module",
-              "src/app/with-custom-injector/with-custom-injector/with-custom-injector-inner/with-custom-injector-inner.module"
-            ],
             "customWebpackConfig": {
               "path":"./webpack.config.js"
             },
