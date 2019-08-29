@@ -1,10 +1,11 @@
-const angularConfig = require('./angular');
-const PROJECT_NAME = "ng-custom-injector-modules";
-
 module.exports = function(aot) {
   const precompiled = {};
   const postfix = aot ? '.ngfactory' : '';
-  const { lazyModules } = angularConfig.projects[PROJECT_NAME].architect.build.options;
+  const lazyModules = [
+    "src/app/with-custom-injector/with-custom-injector.module",
+    "src/app/another-module-with-custom-injector/another-module-with-custom-injector.module",
+    "src/app/with-custom-injector/with-custom-injector/with-custom-injector-inner/with-custom-injector-inner.module"
+  ];
 
   lazyModules.forEach(module => {
     const pathParts = module.split('/');
@@ -12,8 +13,6 @@ module.exports = function(aot) {
 
     precompiled[toPascalCase(moduleName).replace(/-/g, '')] = module + postfix;
   });
-
-  console.log('>>> preco', precompiled)
 
   // in aot output will be
   // {
