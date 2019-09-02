@@ -1,7 +1,8 @@
 import {NgModuleFactory} from '@angular/core';
 
 export function load(ngModuleWebpackModule: any): [string, NgModuleFactory<any>] {
-  const moduleName = ngModuleWebpackModule.moduleType.name;
+  const moduleName = Object.keys(ngModuleWebpackModule).find(key => key.endsWith('ModuleNgFactory'));
 
-  return [moduleName, ngModuleWebpackModule];
+  return [moduleName.replace('NgFactory', ''), ngModuleWebpackModule[moduleName]];
 }
+

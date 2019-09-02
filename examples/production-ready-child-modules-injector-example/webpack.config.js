@@ -9,7 +9,7 @@ module.exports = function (initial, opts) {
   const AngularCompilerPluginInstance = initial.plugins.find(plugin => plugin instanceof AngularCompilerPlugin);
 
   const defaultsTransformers = AngularCompilerPluginInstance._transformers;
-  AngularCompilerPluginInstance._transformers = [ngModulePathTransformer, ...defaultsTransformers];
+  AngularCompilerPluginInstance._transformers = [ngModulePathTransformer(), ...defaultsTransformers];
 
   return merge(initial, {
     resolve: {

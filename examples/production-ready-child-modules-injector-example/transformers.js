@@ -1,5 +1,15 @@
 const ts = require('typescript');
 
+const ngModulePathTransformer = () => {
+  return (context) => {
+    return sourceFile => {
+      const transformations = getTransformations(sourceFile);
+
+      return applyTransformations(sourceFile, transformations, context);
+    }
+  };
+};
+
 module.exports = {ngModulePathTransformer};
 
 // from @angular/devkit (AngularCompilerPlugin)
@@ -7,16 +17,6 @@ OPERATION_KIND.ADD = 0;
 OPERATION_KIND.REMOVE = 1;
 OPERATION_KIND.REPLACE = 2;
 
-// transformer implementation
-function ngModulePathTransformer(context) {
-  return {
-    transformSourceFile: sourceFile => {
-      const transformations = getTransformations(sourceFile);
-
-      return applyTransformations(sourceFile, transformations, context);
-    }
-  }
-}
 
 /**
  * Applied files with CHILD_INJECTOR_MODULES token.
@@ -82,15 +82,8 @@ function getTransformations(sourceFile) {
     const moduleImportNameNode = propertyAccessExpressionToModify.expression;
     const importDeclarationName = moduleImportNameNode.text;
 
-    // we need right side (after dot) part of property access expression (like obj.prop, we get "prop" there)
-    const moduleUsageNode = propertyAccessExpressionToModify.name;
-    const moduleName = moduleUsageNode.text;
-
-    // this is how property would be changed
-    const moduleNameModifier = moduleName + 'NgFactory';
-
     ops.push(
-      new ReplaceNodeOperation(sourceFile, moduleUsageNode, ts.createIdentifier(moduleNameModifier))
+      new ReplaceNodeOperation(sourceFile, propertyAccessExpressionToModify, propertyAccessExpressionToModify.expression)
     );
 
     // now we need modify import (*.module to *.module.ngfactory)
@@ -115,7 +108,7 @@ function getTransformations(sourceFile) {
     const newImportPath = ts.createStringLiteral(identifierToChange.text+'.ngfactory');
 
     ops.push(
-      new ReplaceNodeOperation(sourceFile, identifierToChange, )
+      new ReplaceNodeOperation(sourceFile, identifierToChange, newImportPath)
     );
   });
 
