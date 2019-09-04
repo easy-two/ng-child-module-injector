@@ -5,3 +5,4 @@ export function load(ngModuleWebpackModule: any): [string, NgModuleFactory<any>]
 
   return [moduleName.replace('NgFactory', ''), ngModuleWebpackModule[moduleName]];
 }
+
