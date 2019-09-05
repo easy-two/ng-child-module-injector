@@ -1,17 +1,11 @@
 import {
-  AfterViewInit, Compiler,
+  Compiler,
   Component, Inject,
   Injector,
-  NgModuleFactory,
-  NgModuleFactoryLoader, Optional,
+  Optional,
   ViewChild,
   ViewContainerRef
 } from '@angular/core';
-// @ts-ignore
-import * as withCustomInjectorModule from 'withCustomInjectorModule';
-import { WithCustomInjectorComponent } from './with-custom-injector/with-custom-injector/with-custom-injector.component';
-// @ts-ignore
-import { load } from 'ngFactoryLoader';
 import { CUSTOM_INJECTOR_TOKEN } from './tokens';
 import { ApiService } from './shared/api/api.service';
 
@@ -30,7 +24,6 @@ export class AppComponent {
     private apiService: ApiService,
     @Optional() @Inject(CUSTOM_INJECTOR_TOKEN) token: string
   ) {
-    // console.log('>> token in root', token);
     apiService.doRequest('/root-injector-request').subscribe(() => {}, () => {});
   }
 

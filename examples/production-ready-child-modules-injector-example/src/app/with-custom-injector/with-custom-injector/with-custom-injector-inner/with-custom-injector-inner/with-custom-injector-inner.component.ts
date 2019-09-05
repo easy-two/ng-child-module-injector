@@ -1,7 +1,7 @@
-import {Compiler, Component, Inject, Injector, OnInit, Optional} from '@angular/core';
-import {ApiService} from '../../../../shared/api/api.service';
-import {CUSTOM_INJECTOR_TOKEN} from '../../../../tokens';
-import {HttpClient} from "@angular/common/http";
+import { Compiler, Component, Inject, Injector, Optional } from '@angular/core';
+import { ApiService } from '../../../../shared/api/api.service';
+import { CUSTOM_INJECTOR_TOKEN } from '../../../../tokens';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-with-custom-injector-inner',

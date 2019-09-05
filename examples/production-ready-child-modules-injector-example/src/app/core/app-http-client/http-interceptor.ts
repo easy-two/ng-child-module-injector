@@ -22,7 +22,6 @@ export const AppHttpInterceptorProvider = {
 
 export class AnotherHttpInterceptor {
   intercept(req, next) {
-    // console.log('>> common request interceptor', req.url);
     return next.handle(req);
   }
 }
