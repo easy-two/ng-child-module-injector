@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { WithCustomInjectorInnerComponent } from './with-custom-injector-inner/with-custom-injector-inner.component';
-import {CUSTOM_INJECTOR_TOKEN} from '../../../tokens';
-import {ApiModule} from '../../../shared/api/api.module';
+import { CUSTOM_INJECTOR_TOKEN } from '../../../tokens';
+import { ApiModule } from '../../../shared/api/api.module';
 
 @NgModule({
   declarations: [WithCustomInjectorInnerComponent],

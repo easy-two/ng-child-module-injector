@@ -13,7 +13,6 @@ export class AnotherComponentWithCustomInjectorComponent {
     private apiService: ApiService,
     @Optional() @Inject(CUSTOM_INJECTOR_TOKEN) public token: string
   ) {
-    // console.log('>> token another with custom injector value is:', token);
     apiService.doRequest(this.reqUrl).subscribe(() => {}, () => {});
   }
 

@@ -18,7 +18,6 @@ export class WithCustomInjectorComponent {
     private apiService: ApiService,
     @Optional() @Inject(CUSTOM_INJECTOR_TOKEN) public token: string
   ) {
-    // console.log('>> token with custom injector value is:', token);
     apiService.doRequest(this.reqUrl).subscribe(() => {}, () => {});
   }
 

@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { WithCustomInjectorComponent } from './with-custom-injector/with-custom-injector.component';
 import { CUSTOM_INJECTOR_TOKEN } from '../tokens';
 import { ApiModule } from '../shared/api/api.module';
-import {ChildInjectorModule} from '../core/child-injector/child-injector.module';
+import { ChildInjectorModule } from '../core/child-injector/child-injector.module';
 import {
   WithCustomInjectorInnerComponent
 } from './with-custom-injector/with-custom-injector-inner/with-custom-injector-inner/with-custom-injector-inner.component';
