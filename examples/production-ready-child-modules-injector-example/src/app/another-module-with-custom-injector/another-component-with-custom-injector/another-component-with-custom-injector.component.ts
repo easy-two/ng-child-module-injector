@@ -8,7 +8,7 @@ import { ApiService } from '../../shared/api/api.service';
   styleUrls: ['./another-component-with-custom-injector.component.css']
 })
 export class AnotherComponentWithCustomInjectorComponent {
-  public reqUrl = '/another-with-custom-injector-request';;
+  public reqUrl = '/another-with-custom-injector-request';
 
   constructor(
     private apiService: ApiService,
