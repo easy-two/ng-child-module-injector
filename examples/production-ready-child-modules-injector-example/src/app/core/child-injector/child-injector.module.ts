@@ -2,7 +2,7 @@ import { Compiler, Injector, ModuleWithProviders, NgModule, NgModuleFactory } fr
 import { CommonModule } from '@angular/common';
 import { ChildInjectorComponent } from './child-injector.component';
 import { CHILD_INJECTOR_MODULES, CHILD_INJECTOR_COMPILED_MODULES } from './child-injector-tokens';
-import { load } from '../ng-factory-resolver/ng-factory-loader';
+import { NgFactoryResolver } from '../ng-factory-resolver/ng-factory-resolver';
 import { IChildInjectorModules } from './child-injector.interface';
 
 @NgModule({
@@ -36,7 +36,7 @@ export function childInjectorModulesFactory(
   injector: Injector
 ): any {
   return modules.map(([ngModuleWebpackModule, component]) => {
-    const [name, factory]: [string, NgModuleFactory<any>] = load(ngModuleWebpackModule, compiler);
+    const [name, factory]: [string, NgModuleFactory<any>] = NgFactoryResolver.resolve(ngModuleWebpackModule, compiler);
     const module = factory.create(injector);
 
     return { name, module, component };
