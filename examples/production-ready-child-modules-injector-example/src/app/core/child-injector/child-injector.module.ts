@@ -2,7 +2,7 @@ import { Compiler, Injector, ModuleWithProviders, NgModule, NgModuleFactory } fr
 import { CommonModule } from '@angular/common';
 import { ChildInjectorComponent } from './child-injector.component';
 import { CHILD_INJECTOR_MODULES, CHILD_INJECTOR_COMPILED_MODULES } from './child-injector-tokens';
-import { load } from '../ng-factory-loader/ng-factory-loader';
+import { load } from '../ng-factory-resolver/ng-factory-loader';
 import { IChildInjectorModules } from './child-injector.interface';
 
 @NgModule({
