@@ -1,9 +1,24 @@
-import { Compiler, Injector, ModuleWithProviders, NgModule, NgModuleFactory } from '@angular/core';
+/**
+ * @overview      ChildInjectorModule
+ *                создает переданные модули с новым инжектором
+ * @copyright     Copyright (c) Nexign, JSC, 1992-2019
+ */
+
+import { map } from 'lodash';
+import { Compiler, Injector, ModuleWithProviders, NgModule, Type } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ChildInjectorComponent } from './child-injector.component';
-import { CHILD_INJECTOR_MODULES, CHILD_INJECTOR_COMPILED_MODULES } from './child-injector-tokens';
 import { NgFactoryResolver } from '../ng-factory-resolver/ng-factory-resolver';
-import { IChildInjectorModules } from './child-injector.interface';
+import {
+  IChildInjectorCompiledModules,
+  IChildInjectorModules,
+  INgModuleFactoryLoaderResult
+} from './child-injector.interface';
+import {
+  CHILD_INJECTOR_COMPILED_MODULES,
+  CHILD_INJECTOR_ENTRY_COMPONENTS,
+  CHILD_INJECTOR_MODULES
+} from './child-injector-tokens';
 
 @NgModule({
   imports: [CommonModule],
@@ -18,7 +33,8 @@ export class ChildInjectorModule {
       providers: [
         {
           provide: CHILD_INJECTOR_MODULES,
-          useValue: modules
+          useValue: modules,
+          multi: true
         },
         {
           provide: CHILD_INJECTOR_COMPILED_MODULES,
@@ -28,17 +44,33 @@ export class ChildInjectorModule {
       ]
     };
   }
+
+  static forChildModule<T>(components: Array<T>): ModuleWithProviders {
+    return {
+      ngModule: ChildInjectorModule,
+      providers: [{ provide: CHILD_INJECTOR_ENTRY_COMPONENTS, useValue: components }]
+    };
+  }
 }
 
 export function childInjectorModulesFactory(
-  modules: IChildInjectorModules,
+  modulesOfModules: Array<IChildInjectorModules>,
   compiler: Compiler,
   injector: Injector
-): any {
-  return modules.map(([ngModuleWebpackModule, component]) => {
-    const [name, factory]: [string, NgModuleFactory<any>] = NgFactoryResolver.resolve(ngModuleWebpackModule, compiler);
-    const module = factory.create(injector);
+): Array<IChildInjectorCompiledModules<Type<any>, Type<any>>> {
+  return map(modulesOfModules, modules => {
+    return map(modules, ngModuleWebpackModule => {
+      if (ngModuleWebpackModule.compiled) {
+        return ngModuleWebpackModule.compiled;
+      }
 
-    return { name, module, component };
+      const [name, factory]: INgModuleFactoryLoaderResult = NgFactoryResolver.resolve(ngModuleWebpackModule, compiler);
+      const module = factory.create(injector);
+      const components = module.injector.get(CHILD_INJECTOR_ENTRY_COMPONENTS);
+
+      ngModuleWebpackModule.compiled = { name, module, components };
+
+      return { name, module, components };
+    });
   });
 }

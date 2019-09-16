@@ -8,6 +8,10 @@ import {
 } from '@angular/core';
 import { CUSTOM_INJECTOR_TOKEN } from './tokens';
 import { ApiService } from './shared/api/api.service';
+import { WithCustomInjectorComponent } from './with-custom-injector/with-custom-injector/with-custom-injector.component';
+import {
+  AnotherComponentWithCustomInjectorComponent
+} from './another-module-with-custom-injector/another-component-with-custom-injector/another-component-with-custom-injector.component';
 
 @Component({
   selector: 'app-root',
@@ -16,6 +20,8 @@ import { ApiService } from './shared/api/api.service';
 })
 export class AppComponent {
   title = 'ng-custom-injector-modules';
+  WithCustomInjectorComponent = WithCustomInjectorComponent;
+  AnotherComponentWithCustomInjectorComponent = AnotherComponentWithCustomInjectorComponent;
 
   @ViewChild('testOutlet', { read: ViewContainerRef, static: true }) testOutlet: ViewContainerRef;
   constructor(

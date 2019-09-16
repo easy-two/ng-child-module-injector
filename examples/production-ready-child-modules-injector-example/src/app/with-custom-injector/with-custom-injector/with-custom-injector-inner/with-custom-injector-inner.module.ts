@@ -3,12 +3,14 @@ import { CommonModule } from '@angular/common';
 import { WithCustomInjectorInnerComponent } from './with-custom-injector-inner/with-custom-injector-inner.component';
 import { CUSTOM_INJECTOR_TOKEN } from '../../../tokens';
 import { ApiModule } from '../../../shared/api/api.module';
+import {ChildInjectorModule} from "../../../core/child-injector/child-injector.module";
 
 @NgModule({
   declarations: [WithCustomInjectorInnerComponent],
   imports: [
     CommonModule,
-    ApiModule
+    ApiModule,
+    ChildInjectorModule.forChildModule([WithCustomInjectorInnerComponent])
   ],
   entryComponents: [WithCustomInjectorInnerComponent],
   providers: [

@@ -4,9 +4,6 @@ import { WithCustomInjectorComponent } from './with-custom-injector/with-custom-
 import { CUSTOM_INJECTOR_TOKEN } from '../tokens';
 import { ApiModule } from '../shared/api/api.module';
 import { ChildInjectorModule } from '../core/child-injector/child-injector.module';
-import {
-  WithCustomInjectorInnerComponent
-} from './with-custom-injector/with-custom-injector-inner/with-custom-injector-inner/with-custom-injector-inner.component';
 import { WithCustomInjectorInnerModule } from './with-custom-injector/with-custom-injector-inner/with-custom-injector-inner.module';
 
 @NgModule({
@@ -15,9 +12,8 @@ import { WithCustomInjectorInnerModule } from './with-custom-injector/with-custo
   imports: [
     CommonModule,
     ApiModule,
-    ChildInjectorModule.forModules([
-      [WithCustomInjectorInnerModule, WithCustomInjectorInnerComponent]
-    ])
+    ChildInjectorModule.forModules([WithCustomInjectorInnerModule]),
+    ChildInjectorModule.forChildModule([WithCustomInjectorComponent])
   ],
   providers: [
     { provide: CUSTOM_INJECTOR_TOKEN, useValue: 'with-custom-injector' }

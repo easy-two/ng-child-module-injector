@@ -1,28 +1,25 @@
 const ts = require('typescript');
 
-const ngModulePathTransformer = () => {
-  return (context) => {
+const childInjectorModuleTransformer = () => {
+  return context => {
     return sourceFile => {
       const transformations = getTransformations(sourceFile);
 
       return applyTransformations(sourceFile, transformations, context);
-    }
+    };
   };
 };
 
-module.exports = {ngModulePathTransformer};
+module.exports = {childInjectorModuleTransformer};
 
 // from @angular/devkit (AngularCompilerPlugin)
 OPERATION_KIND.ADD = 0;
 OPERATION_KIND.REMOVE = 1;
 OPERATION_KIND.REPLACE = 2;
 
-
 /**
  * Applied files with CHILD_INJECTOR_MODULES token.
- * Modifies arguments of forModules call in compiled files (*.ngfactory.module.ts)./
- * @param sourceFile
- * @returns {[]|Array}
+ * Modifies arguments of forModules call in compiled files (*.ngfactory.module.ts).
  */
 function getTransformations(sourceFile) {
   // find all imports
@@ -30,7 +27,9 @@ function getTransformations(sourceFile) {
 
   // find import for child-injector-tokens file
   const importForChildInjectorModuleToken = allImports.find(importDeclaration => {
-    return collectDeepNodes(importDeclaration, ts.SyntaxKind.StringLiteral).some(stringLiteral => stringLiteral.text.includes('child-injector-tokens'))
+    return collectDeepNodes(importDeclaration, ts.SyntaxKind.StringLiteral).some(stringLiteral =>
+      stringLiteral.text.includes('child-injector-tokens')
+    );
   });
 
   if (!importForChildInjectorModuleToken) {
@@ -56,7 +55,10 @@ function getTransformations(sourceFile) {
         return false;
       }
       const propertyAccessExpression = argument;
-      return propertyAccessExpression.expression.text === identifierToFindName && propertyAccessExpression.name.text === 'CHILD_INJECTOR_MODULES';
+      return (
+        propertyAccessExpression.expression.text === identifierToFindName &&
+        propertyAccessExpression.name.text === 'CHILD_INJECTOR_MODULES'
+      );
     });
   });
 
@@ -65,59 +67,75 @@ function getTransformations(sourceFile) {
   }
 
   // get third argument of call expression
-  const arrayLiteralToModify = callExpressionsAboutCIMForModules.arguments[2];
+  // is will be a function expression like
+  // i0.ɵmpd(1024, i449.CHILD_INJECTOR_MODULES, function () { return [[i722.SubscriberProductsVolumesHistoryModule], [i722.SubscriberProductsVolumesHistoryModule]]; }, [])
+  const functionExpression = callExpressionsAboutCIMForModules.arguments[2];
 
-  if (!arrayLiteralToModify) {
+  if (!functionExpression) {
     return [];
+  }
+
+  const arrayLiteralExpression = collectDeepNodes(functionExpression, ts.SyntaxKind.ArrayLiteralExpression)[0];
+
+  if (!arrayLiteralExpression) {
+    return;
+  }
+
+  const internalArrayLiteralExpression = arrayLiteralExpression.elements;
+
+  if (internalArrayLiteralExpression.length === 0) {
+    return;
   }
 
   const ops = [];
 
-  // argument which we pass to forModules function is an array
-  arrayLiteralToModify.elements.forEach(arrayLiteral => {
-    // we need to change first element of array (which we passed to forModules)
-    const propertyAccessExpressionToModify = arrayLiteral.elements[0];
+  // arguments which we pass to forModules (Array)
+  internalArrayLiteralExpression.forEach(arrayLiteralExpression => {
+    const propertyAccessExpressions = arrayLiteralExpression.elements;
 
-    // we need left side (before dot) part of property access expression (like obj.prop, we get "obj" there)
-    const moduleImportNameNode = propertyAccessExpressionToModify.expression;
-    const importDeclarationName = moduleImportNameNode.text;
+    propertyAccessExpressions.forEach(propertyAccessExpressionToModify => {
+      // we need left side (before dot) part of property access expression (like obj.prop, we get "obj" there)
+      const moduleImportNameNode = propertyAccessExpressionToModify.expression;
+      const importDeclarationName = moduleImportNameNode.text;
 
-    ops.push(
-      new ReplaceNodeOperation(sourceFile, propertyAccessExpressionToModify, propertyAccessExpressionToModify.expression)
-    );
+      ops.push(
+        new ReplaceNodeOperation(
+          sourceFile,
+          propertyAccessExpressionToModify,
+          propertyAccessExpressionToModify.expression
+        )
+      );
 
-    // now we need modify import (*.module to *.module.ngfactory)
-    const importToModify = allImports.find(importDeclaration => {
-      return collectDeepNodes(importDeclaration, ts.SyntaxKind.Identifier).find(identifier => {
-        return identifier.text === importDeclarationName
+      // now we need modify import (*.module to *.module.ngfactory)
+      const importToModify = allImports.find(importDeclaration => {
+        return collectDeepNodes(importDeclaration, ts.SyntaxKind.Identifier).find(identifier => {
+          return identifier.text === importDeclarationName;
+        });
       });
+
+      if (!importToModify) {
+        return;
+      }
+
+      // find string literal to change
+      const identifierToChange = collectDeepNodes(importToModify, ts.SyntaxKind.StringLiteral)[0];
+
+      if (!identifierToChange) {
+        return;
+      }
+
+      // get new import path (it would be changed like my.module to my.module.ngfactory)
+      const newImportPath = ts.createStringLiteral(identifierToChange.text + '.ngfactory');
+
+      ops.push(new ReplaceNodeOperation(sourceFile, identifierToChange, newImportPath));
     });
-
-    if (!importToModify) {
-      return;
-    }
-
-    // find string literal to change
-    const identifierToChange = collectDeepNodes(importToModify, ts.SyntaxKind.StringLiteral)[0];
-
-    if (!identifierToChange) {
-      return;
-    }
-
-    // get new import path (it would be changed like my.module to my.module.ngfactory)
-    const newImportPath = ts.createStringLiteral(identifierToChange.text+'.ngfactory');
-
-    ops.push(
-      new ReplaceNodeOperation(sourceFile, identifierToChange, newImportPath)
-    );
   });
 
   return ops;
 }
 
 // from @angular/devkit (AngularCompilerPlugin)
-function OPERATION_KIND() {
-}
+function OPERATION_KIND() {}
 
 function ReplaceNodeOperation(sourceFile, target, replacement) {
   this.kind = OPERATION_KIND.REPLACE;
@@ -127,13 +145,9 @@ function ReplaceNodeOperation(sourceFile, target, replacement) {
 }
 
 function applyTransformations(node, transformations, context) {
-  const removeTransformations = transformations.filter(
-    op => op.kind === OPERATION_KIND.REMOVE,
-  );
+  const removeTransformations = transformations.filter(op => op.kind === OPERATION_KIND.REMOVE);
   const addTransformations = transformations.filter(op => op.kind === OPERATION_KIND.ADD);
-  const replaceTransformations = transformations.filter(
-    op => op.kind === OPERATION_KIND.REPLACE,
-  );
+  const replaceTransformations = transformations.filter(op => op.kind === OPERATION_KIND.REPLACE);
 
   const visitor = node => {
     let modified = false;
@@ -157,7 +171,7 @@ function applyTransformations(node, transformations, context) {
       modifiedNodes = [
         ...add.filter(op => op.before).map(op => op.before),
         ...modifiedNodes,
-        ...add.filter(op => op.after).map(op => op.after),
+        ...add.filter(op => op.after).map(op => op.after)
       ];
       modified = true;
     }
@@ -165,10 +179,9 @@ function applyTransformations(node, transformations, context) {
     // If we changed anything, return modified nodes without visiting further.
     if (modified) {
       return modifiedNodes;
-    } else {
-      // Otherwise return node as is and visit children.
-      return ts.visitEachChild(node, visitor, context);
     }
+    // Otherwise return node as is and visit children.
+    return ts.visitEachChild(node, visitor, context);
   };
 
   // Don't visit the sourcefile at all if we don't have ops for it.
@@ -186,13 +199,10 @@ function applyTransformations(node, transformations, context) {
   return result;
 }
 
-function collectDeepNodes(
-  node,
-  kind,
-) {
+function collectDeepNodes(node, kind) {
   const kinds = Array.isArray(kind) ? kind : [kind];
   const nodes = [];
-  const helper = (child) => {
+  const helper = child => {
     if (kinds.includes(child.kind)) {
       nodes.push(child);
     }
