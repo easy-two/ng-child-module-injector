@@ -1,10 +1,11 @@
-import { NgModuleRef } from '@angular/core';
+import { NgModuleRef, NgModuleFactory } from '@angular/core';
 
-export type ICustomInjectorModule = [any, any];
-export type IChildInjectorModules = Array<ICustomInjectorModule>;
-export interface ICustomInjectorCompiledModule {
+export type IChildInjectorModules = Array<any>;
+export interface IChildInjectorCompiledModule<M, C> {
   name: string;
-  module: NgModuleRef<any>;
-  component: any;
+  module: NgModuleRef<M>;
+  components: Array<C>;
 }
-export type IChildInjectorCompiledModules = Array<ICustomInjectorCompiledModule>;
+export type IChildInjectorCompiledModules<M, C> = Array<IChildInjectorCompiledModule<M, C>>;
+export type INgModuleFactoryLoaderResult = [string, NgModuleFactory<any>];
+

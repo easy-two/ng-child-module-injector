@@ -6,11 +6,17 @@ import {
   ViewContainerRef,
   Input,
   ComponentRef,
-  ComponentFactory, OnDestroy, OnChanges, OnInit
+  ComponentFactory,
+  OnDestroy,
+  OnChanges,
+  OnInit
 } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { CHILD_INJECTOR_COMPILED_MODULES } from './child-injector-tokens';
-import { IChildInjectorCompiledModules } from './child-injector.interface';
+import {
+  IChildInjectorCompiledModule,
+  IChildInjectorCompiledModules
+} from './child-injector.interface';
 
 @Component({
   selector: 'app-child-injector',
@@ -19,23 +25,44 @@ import { IChildInjectorCompiledModules } from './child-injector.interface';
 })
 export class ChildInjectorComponent<T> implements OnInit, OnChanges, OnDestroy {
   constructor(
-    @Optional() @Inject(CHILD_INJECTOR_COMPILED_MODULES) private compiledModules: IChildInjectorCompiledModules,
+    @Optional()
+    @Inject(CHILD_INJECTOR_COMPILED_MODULES)
+    private compiledModules: IChildInjectorCompiledModules<any, T>,
     private vc: ViewContainerRef
   ) {}
 
-  // tslint:disable-next-line:no-input-rename
-  @Input('module') moduleName: string;
-  // tslint:disable-next-line:no-input-rename
-  @Input('class') className: string;
+  @Input() component: T;
+  @Input() className: string;
   @Input() inputs: any = {};
   @Input() outputs: any = {};
+
 
   sub: Subscription = new Subscription();
   componentRef: ComponentRef<T>;
 
   ngOnInit() {
-    const { module, component } = this.compiledModules.find(m => m.name === this.moduleName);
-    const factory: ComponentFactory<T> = module.componentFactoryResolver.resolveComponentFactory(component);
+    if (!this.component) {
+      throw new Error('[ChildInjectorComponent]: component is not passed to ChildInjectorComponent');
+    }
+    const compiledModule = this.compiledModules.reduce(
+      (res, modules: any) => {
+        if (res) {
+          return res;
+        }
+        return modules.find((module: IChildInjectorCompiledModule<any, T>) =>
+          module.components.some(component => component === this.component)
+        );
+      },
+      null
+    );
+
+    if (!compiledModule) {
+      throw new Error(`[ChildInjectorComponent]: can not find compiled module for component ${(this.component as any).name}`);
+    }
+
+    const factory: ComponentFactory<T> = compiledModule.module.componentFactoryResolver.resolveComponentFactory(
+      this.component
+    );
     this.componentRef = this.vc.createComponent(factory);
     const { instance, location } = this.componentRef;
 
