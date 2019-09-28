@@ -5,6 +5,7 @@ import { NgModule } from '@angular/core';
 import { AppComponent } from './app.component';
 import { ApiModule } from './shared/api/api.module';
 import { ChildInjectorModule } from './core/child-injector/child-injector.module';
+import { CUSTOM_INJECTOR_TOKEN } from './tokens';
 
 @NgModule({
   declarations: [
@@ -17,6 +18,9 @@ import { ChildInjectorModule } from './core/child-injector/child-injector.module
       WithCustomInjectorModule, AnotherModuleWithCustomInjectorModule
     ])
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  providers: [
+    { provide: CUSTOM_INJECTOR_TOKEN, useValue: 'root' }
+  ]
 })
 export class AppModule { }
