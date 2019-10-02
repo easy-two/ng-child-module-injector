@@ -1,5 +1,5 @@
+const { childInjectorModuleTransformer } = require('@easy-two/ngx-child-injector-transformer');
 const { AngularCompilerPlugin } = require('@ngtools/webpack');
-const { childInjectorModuleTransformer } = require('./transformers');
 
 module.exports = function (initial) {
   const AngularCompilerPluginInstance = initial.plugins.find(plugin => plugin instanceof AngularCompilerPlugin);

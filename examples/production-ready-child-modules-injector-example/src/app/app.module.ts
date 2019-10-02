@@ -4,7 +4,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { AppComponent } from './app.component';
 import { ApiModule } from './shared/api/api.module';
-import { ChildInjectorModule } from './core/child-injector/child-injector.module';
+import { ChildInjectorModule } from '@easy-two/ngx-child-injector';
 import { CUSTOM_INJECTOR_TOKEN } from './tokens';
 
 @NgModule({

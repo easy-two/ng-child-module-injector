@@ -5,7 +5,7 @@ import {
 } from './another-component-with-custom-injector/another-component-with-custom-injector.component';
 import { CUSTOM_INJECTOR_TOKEN } from '../tokens';
 import { ApiModule } from '../shared/api/api.module';
-import {ChildInjectorModule} from "../core/child-injector/child-injector.module";
+import { ChildInjectorModule } from '@easy-two/ngx-child-injector';
 
 @NgModule({
   declarations: [AnotherComponentWithCustomInjectorComponent],
